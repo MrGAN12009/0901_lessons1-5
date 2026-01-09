@@ -67,8 +67,13 @@ def admin_menu():
 
         elif choice == "2":
             name = input("ВВедите название продукта: ")
-            price = float(input("Введите цену продукта: "))
-            Product.create(name, price)
+            price = input("Введите цену продукта: ")
+            try:
+                float(price)
+            except ValueError:
+                print("В цене не должно быть букв!")
+                continue
+            Product.create(name, float(price))
             print("Продукт успешно добавлен!")
         
         elif choice == "3":
