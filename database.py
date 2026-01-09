@@ -8,7 +8,6 @@ class Database:
         self.cursor = self.conn.cursor()
         self._init_tables()
     
-
     def _init_tables(self):
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS users(
                                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -26,7 +25,7 @@ class Database:
                             """)
         
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS orders(
-                                id INTEGER PRIMARY KEY AUTOINCREMENT
+                                id INTEGER PRIMARY KEY AUTOINCREMENT,
                                 user_id INTEGER,
                                 product_id INTEGER,
                                 FOREIGN KEY(user_id) REFERENCES users(id),
@@ -34,16 +33,12 @@ class Database:
                                 )
                             """)
         
-        admin = self.cursor.fetchone("SELECT * FROM users WHERE username = ?", ("admin",))
-        
+        admin = self.fetchone("SELECT * FROM users WHERE username = ?", ("admin",))
         if not admin:
-            self.cursor.execute("UNSERT INTO users(username, password, role) VALUES (?, ?, ?)",
+            self.cursor.execute("INSERT INTO users(username, password, role) VALUES (?, ?, ?)",
                                 ("admin", "admin", "admin")
                         )
-
-        print("БД инициализирована!")
-
-
+            self.conn.commit()
 
 
     def execute(self, query, params=()):
@@ -57,7 +52,3 @@ class Database:
     def fetchall(self, query, params=()):
         self.cursor.execute(query, params)
         return self.cursor.fetchall()
-    
-
-
-    
